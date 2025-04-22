@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>TâmAI – Lá thư chưa từng gửi</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f8f4f0;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #7a5bff;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #7a5bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .response {
+      margin-top: 20px;
+      padding: 15px;
+      background: #fff8e1;
+      border-left: 4px solid #ff9800;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>💌 Viết thư cho TâmAI</h1>
+  <p>Hãy chia sẻ điều bạn chưa từng nói ra...</p>
+  <textarea id="userInput" placeholder="Nhập lá thư của bạn ở đây..."></textarea>
+  <button onclick="generateReply()">Gửi thư</button>
+  <div class="response" id="aiResponse" style="display:none;"></div>
+
+  <script>
+    function generateReply() {
+      const userText = document.getElementById("userInput").value.trim();
+      const responseBox = document.getElementById("aiResponse");
+
+      if (!userText) {
+        alert("Hãy viết điều gì đó trước khi gửi nhé!");
+        return;
+      }
+
+      // Giả lập phản hồi từ AI
+      const replies = [
+        "Cảm ơn bạn đã chia sẻ. Đôi khi, chỉ cần ai đó lắng nghe… là đủ chữa lành.",
+        "Tôi hiểu nỗi lòng bạn. Mọi cảm xúc đều đáng được trân trọng.",
+        "Lá thư của bạn rất chân thật. Bạn đã dũng cảm hơn bạn nghĩ nhiều đấy.",
+        "Cảm xúc đó… rất đẹp. Cảm ơn vì đã để tôi lắng nghe."
+      ];
+
+      const randomReply = replies[Math.floor(Math.random() * replies.length)];
+      responseBox.innerText = randomReply;
+      responseBox.style.display = "block";
+    }
+  </script>
+</body>
+</html>
