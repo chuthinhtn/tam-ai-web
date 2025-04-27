@@ -1,51 +1,45 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Viết thư cho TâmAI</title>
-    <style>
-      body {
-        font-family: "Space UI", sans-serif;
-        background: #fef7f3;
-        padding: 30px;
-        text-align: center;
-      }
-      textarea {
-        width: 80%;
-        height: 150px;
-        font-size: 16px;
-        padding: 10px;
-        margin-bottom: 20px;
-      }
-      button {
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>💌 Viết thư cho <span style="color:#8e44ad">TâmAI</span></h1>
-    <textarea id="message" placeholder="Hãy chia sẻ điều bạn chưa từng nói ra..."></textarea><br />
-    <button onclick="submitMessage()">Gửi thư</button>
-    <button onclick="playAudio()" style="margin-left: 10px">🔊 Nghe thử</button>
-    <div id="response" style="margin-top: 30px;"></div>
+<script>
+async function generateReply() {
+  const userText = document.getElementById("userInput").value.trim();
+  const responseBox = document.getElementById("aiResponse");
+  if (!userText) {
+    alert("Hãy viết điều gì đó trước khi gửi.");
+    return;
+  }
+  responseBox.innerText = "📨 Đang gửi thư cho TâmAI...";
+  responseBox.style.display = "block";
 
-    <script>
-      async function submitMessage() {
-        const msg = document.getElementById("message").value;
-        document.getElementById("response").innerHTML = "⏳ Đang xử lý...";
-        const res = await fetch("/api/tts", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: msg }),
-        });
-        const data = await res.json();
-        if (data.url) {
-          document.getElementById("response").innerHTML = `
-            <audio controls autoplay src="${data.url}"></audio><br/>
-            <small>✅ Đã tạo giọng đọc</small>`;
-        } else {
-          document.getElementById("response").innerText = "❌ Lỗi: " + data.error;
-        }
-      }
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: userText })
+    });
+    const data = await res.json();
+    responseBox.innerText = data.reply;
+  } catch (error) {
+    responseBox.innerText = "❌ Đã có lỗi xảy ra!";
+    console.error(error);
+  }
+}
+
+async function playAudio() {
+  const text = document.getElementById("aiResponse").innerText;
+  if (!text) {
+    alert("Chưa có nội dung để đọc!");
+    return;
+  }
+  try {
+    const res = await fetch(`/api/tts?text=${encodeURIComponent(text)}`);
+    const blob = await res.blob();
+    const audioUrl = URL.createObjectURL(blob);
+    const audio = new Audio(audioUrl);
+    audio.play();
+  } catch (error) {
+    console.error(error);
+    alert("Không thể phát giọng đọc.");
+  }
+}
+</script>
+</body>
+</html>
